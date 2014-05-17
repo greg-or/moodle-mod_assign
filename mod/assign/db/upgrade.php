@@ -484,5 +484,30 @@ function xmldb_assign_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2014010801, 'assign');
     }
 
+    // Moodle v2.7.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2014051201) {
+
+        // Define field markerdetailnotifications to be added to assign.
+        $table = new xmldb_table('assign');
+        $field = new xmldb_field('markerdetailnotifications',
+                                 XMLDB_TYPE_INTEGER,
+                                 '2',
+                                 null,
+                                 XMLDB_NOTNULL,
+                                 null,
+                                 '1',
+                                 'sendstudentnotifications');
+
+        // Conditionally launch add field markerdetailnotifications.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Assign savepoint reached.
+        upgrade_mod_savepoint(true, 2014051201, 'assign');
+    }
+
     return true;
 }

@@ -578,6 +578,7 @@ class assign {
         if (isset($formdata->sendstudentnotifications)) {
             $update->sendstudentnotifications = $formdata->sendstudentnotifications;
         }
+        $update->markerdetailnotifications = $formdata->markerdetailnotifications;
         $update->duedate = $formdata->duedate;
         $update->cutoffdate = $formdata->cutoffdate;
         $update->allowsubmissionsfromdate = $formdata->allowsubmissionsfromdate;
@@ -919,6 +920,7 @@ class assign {
         if (isset($formdata->sendstudentnotifications)) {
             $update->sendstudentnotifications = $formdata->sendstudentnotifications;
         }
+        $update->markerdetailnotifications = $formdata->markerdetailnotifications;
         $update->duedate = $formdata->duedate;
         $update->cutoffdate = $formdata->cutoffdate;
         $update->allowsubmissionsfromdate = $formdata->allowsubmissionsfromdate;
@@ -1595,7 +1597,7 @@ class assign {
         // Collect all submissions from the past 24 hours that require mailing.
         // Submissions are excluded if the assignment is hidden in the gradebook.
         $sql = 'SELECT g.id as gradeid, a.course, a.name, a.blindmarking, a.revealidentities,
-                       g.*, g.timemodified as lastmodified
+                       g.*, g.timemodified as lastmodified, a.markerdetailnotifications
                  FROM {assign} a
                  JOIN {assign_grades} g ON g.assignment = a.id
             LEFT JOIN {assign_user_flags} uf ON uf.assignment = a.id AND uf.userid = g.userid
@@ -1708,10 +1710,10 @@ class assign {
             $modulename = get_string('modulename', 'assign');
 
             $uniqueid = 0;
-            if ($submission->blindmarking && !$submission->revealidentities) {
+            if ($submission->blindmarking && !$submission->revealidentities || !$submission->markerdetailnotifications) {
                 $uniqueid = self::get_uniqueid_for_user_static($submission->assignment, $user->id);
             }
-            $showusers = $submission->blindmarking && !$submission->revealidentities;
+            $showusers = $submission->blindmarking && !$submission->revealidentities || !$submission->markerdetailnotifications;
             self::send_assignment_notification($grader,
                                                $user,
                                                $messagetype,
@@ -3802,6 +3804,7 @@ class assign {
                                                       $grader,
                                                       $this->get_feedback_plugins(),
                                                       $grade,
+                                                      $instance->markerdetailnotifications,
                                                       $this->get_course_module()->id,
                                                       $this->get_return_action(),
                                                       $this->get_return_params());

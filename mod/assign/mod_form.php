@@ -163,6 +163,10 @@ class mod_assign_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno', 'sendstudentnotifications', $name);
         $mform->addHelpButton('sendstudentnotifications', 'sendstudentnotificationsdefault', 'assign');
 
+        $name = get_string('markerdetailnotificationsdefault', 'assign');
+        $mform->addElement('selectyesno', 'markerdetailnotifications', $name);
+        $mform->addHelpButton('markerdetailnotifications', 'markerdetailnotificationsdefault', 'assign');
+
         // Plagiarism enabling form.
         if (!empty($CFG->enableplagiarism)) {
             require_once($CFG->libdir . '/plagiarismlib.php');

@@ -275,6 +275,8 @@ class assign_feedback_status implements renderable {
     public $feedbackplugins = array();
     /** @var stdClass assign_grade record */
     public $grade = null;
+    /** @var int markerdetailnotifications */
+    public $markerdetailnotifications = 0;
     /** @var int coursemoduleid */
     public $coursemoduleid = 0;
     /** @var string returnaction */
@@ -298,6 +300,7 @@ class assign_feedback_status implements renderable {
                                 $grader,
                                 $feedbackplugins,
                                 $grade,
+                                $markerdetailnotifications,
                                 $coursemoduleid,
                                 $returnaction,
                                 $returnparams) {
@@ -306,6 +309,7 @@ class assign_feedback_status implements renderable {
         $this->grader = $grader;
         $this->feedbackplugins = $feedbackplugins;
         $this->grade = $grade;
+        $this->markerdetailnotifications = $markerdetailnotifications;
         $this->coursemoduleid = $coursemoduleid;
         $this->returnaction = $returnaction;
         $this->returnparams = $returnparams;
