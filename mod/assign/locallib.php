@@ -6356,9 +6356,12 @@ class assign {
             }
             $members = $this->get_submission_group_members($groupid, true);
             foreach ($members as $member) {
-                // User may exist in multple groups (which should put them in the default group).
-                $this->apply_grade_to_user($data, $member->id, $data->attemptnumber);
-                $this->process_outcomes($member->id, $data, $userid);
+                // Skip user if suspended.
+                if ($this->is_active_user($member->id)) {
+                    // User may exist in multple groups (which should put them in the default group).
+                    $this->apply_grade_to_user($data, $member->id, $data->attemptnumber);
+                    $this->process_outcomes($member->id, $data, $userid);
+                }
             }
         } else {
             $this->apply_grade_to_user($data, $userid, $data->attemptnumber);
