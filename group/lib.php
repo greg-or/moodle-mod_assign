@@ -708,10 +708,12 @@ function groups_get_possible_roles($context) {
  * @param int $courseid The id of the course
  * @param int $roleid The role to select users from
  * @param int $cohortid restrict to cohort id
+ * @param int $groupid restrict to group membership
+ * @param int $groupingid restrict to grouping membership
  * @param string $orderby The column to sort users by
  * @return array An array of the users
  */
-function groups_get_potential_members($courseid, $roleid = null, $cohortid = null, $orderby = 'lastname ASC, firstname ASC') {
+function groups_get_potential_members($courseid, $roleid = null, $cohortid = null, $groupid = null, $groupingid = null, $orderby = 'lastname ASC, firstname ASC') {
     global $DB;
 
     $context = context_course::instance($courseid);
@@ -737,11 +739,33 @@ function groups_get_potential_members($courseid, $roleid = null, $cohortid = nul
         $cohortjoin = "";
     }
 
+    if ($groupid) {
+        $groupjoin = "JOIN {groups_members} gp ON (gp.userid = u.id AND gp.groupid = :groupid)";
+        $params['groupid'] = $groupid;
+    } else {
+        $groupjoin = "";
+    }
+
+    if ($groupingid) {
+        $groupingjoin = "JOIN {groupings_groups} gg";	
+        $groupingjoin .= " JOIN {groups_members} gm ON (gm.userid = u.id AND gm.groupid = gg.groupid)";
+        if($where == "") {
+            $where .= "WHERE gg.groupingid = :groupingid";
+        } else {
+            $where .= " AND gg.groupingid = :groupingid";
+        }
+        $params['groupingid'] = $groupingid;
+    } else {
+        $groupingjoin = "";
+    }
+
     $allusernamefields = get_all_user_name_fields(true, 'u');
-    $sql = "SELECT u.id, u.username, $allusernamefields, u.idnumber
+    $sql = "SELECT DISTINCT u.id, u.username, $allusernamefields, u.idnumber
               FROM {user} u
               JOIN ($esql) e ON e.id = u.id
        $cohortjoin
+            $groupjoin
+            $groupingjoin
             $where
           ORDER BY $orderby";
 

@@ -68,6 +68,40 @@ class autogroup_form extends moodleform {
         $mform->addRule('number', null, 'numeric', null, 'client');
         $mform->addRule('number', get_string('required'), 'required', null, 'client');
 
+        $options = array();
+        $options[0] = get_string('none');
+        $class = '';
+        if ($groupings = groups_get_all_groupings($COURSE->id)) {
+            foreach ($groupings as $grouping) {
+                $options[$grouping->id] = $grouping->name;
+            }
+        } else {
+            $class = 'disabled';
+        }
+        $mform->addElement('select', 'groupingid', get_string('selectfromgrouping', 'group'), $options, $class);
+        $mform->addHelpButton('groupingid', 'selectfromgrouping', 'group');
+        $mform->setDefault('groupingid', 0);
+        $mform->setAdvanced('groupingid');
+        $mform->disabledIf('groupingid', 'groupid', 'neq', 0);
+        $mform->disabledIf('groupingid', 'allocateby', 'eq', 'no');
+
+        $options = array();
+        $options[0] = get_string('none');
+        $class = '';
+        if ($groups = groups_get_all_groups($COURSE->id)) {
+            foreach ($groups as $group) {
+                $options[$group->id] = $group->name;
+            }
+        } else {
+            $class = 'disabled';
+        }
+        $mform->addElement('select', 'groupid', get_string('selectfromgroup', 'group'), $options, $class);
+        $mform->addHelpButton('groupid', 'selectfromgroup', 'group');
+        $mform->setDefault('groupid', 0);
+        $mform->setAdvanced('groupid');
+        $mform->disabledIf('groupid', 'groupingid', 'neq', 0);
+        $mform->disabledIf('groupid', 'allocateby', 'eq', 'no');
+
         $mform->addElement('header', 'groupmembershdr', get_string('groupmembers', 'group'));
         $mform->setExpanded('groupmembershdr', true);
 
