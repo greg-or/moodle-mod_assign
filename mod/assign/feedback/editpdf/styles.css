@@ -19,13 +19,29 @@
     -o-user-select: none;
 }
 
+.moodle-dialogue-base .moodle-dialogue-wrap {
+    margin-top: 60px !important;
+}
+
+.assignfeedback_editpdf_widget .pageheader-container {
+    background-color: #ebebeb;
+    text-align: center;
+    height: 55px;
+    left: 0px;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+}
+
 .assignfeedback_editpdf_widget .pageheader {
     background-color: #ebebeb;
-    border-bottom: 1px solid #cccccc;
+    display: inline-block;
     padding: 0px;
     padding-left: 20px;
     padding-right: 20px;
     min-height: 50px;
+    width: 800px;
 }
 
 .moodle-dialogue-base .moodle-dialogue.assignfeedback_editpdf_widget .moodle-dialogue-bd {

@@ -196,7 +196,7 @@ class assignfeedback_editpdf_renderer extends plugin_renderer_base {
                                        $toolbar1 .
                                        $clearfix,
                                        'pageheader');
-        $body = $pageheader;
+        $body = html_writer::div($pageheader, 'pageheader-container');
 
         // Loading progress bar.
         $progressbar = html_writer::div('', 'bar', array('style' => 'width: 0%'));
