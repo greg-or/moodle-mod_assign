@@ -1192,7 +1192,19 @@ class assign_grading_table extends table_sql implements renderable {
                     return $plugin->get_editor_text($field, $row->gradeid);
                 }
 
-                if ($row->gradeid) {
+
+                if ($this->assignment->get_instance()->teamsubmission) {
+                    $group = false;
+                    $submission = false;
+
+                    $this->get_group_and_submission($row->id, $group, $submission, -1);
+                    if ($submission) {
+                        if ($submission->status == ASSIGN_SUBMISSION_STATUS_REOPENED) {
+                            // For a newly reopened submission - we want to show the previous submission in the table.
+                            $this->get_group_and_submission($row->id, $group, $submission, $submission->attemptnumber - 1);
+                        }
+                    }
+                } else if ($row->gradeid) {
                     $grade = new stdClass();
                     $grade->id = $row->gradeid;
                     $grade->timecreated = $row->firstmarked;
