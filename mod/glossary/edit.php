@@ -6,6 +6,8 @@ require_once('edit_form.php');
 
 $cmid = required_param('cmid', PARAM_INT);            // Course Module ID
 $id   = optional_param('id', 0, PARAM_INT);           // EntryID
+$mode = optional_param('mode', '', PARAM_ALPHA);
+$hook = optional_param('hook', '', PARAM_CLEAN);
 
 if (!$cm = get_coursemodule_from_id('glossary', $cmid)) {
     print_error('invalidcoursemodule');
@@ -26,6 +28,12 @@ if (!$glossary = $DB->get_record('glossary', array('id'=>$cm->instance))) {
 $url = new moodle_url('/mod/glossary/edit.php', array('cmid'=>$cm->id));
 if (!empty($id)) {
     $url->param('id', $id);
+    if (isset($mode)) {
+        $url->param('mode', $mode);
+    }
+    if (isset($hook)) {
+        $url->param('hook', $hook);
+    }
 }
 $PAGE->set_url($url);
 

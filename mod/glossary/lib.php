@@ -2988,6 +2988,9 @@ function glossary_extend_settings_navigation(settings_navigation $settings, navi
 
     $mode = optional_param('mode', '', PARAM_ALPHA);
     $hook = optional_param('hook', 'ALL', PARAM_CLEAN);
+    $eid = optional_param('eid', 0, PARAM_INT);
+    $cmid = optional_param('cmid', 0, PARAM_INT);
+    $id = optional_param('id', 0, PARAM_INT);
 
     if (has_capability('mod/glossary:import', $PAGE->cm->context)) {
         $glossarynode->add(get_string('importentries', 'glossary'), new moodle_url('/mod/glossary/import.php', array('id'=>$PAGE->cm->id)));
@@ -3003,6 +3006,22 @@ function glossary_extend_settings_navigation(settings_navigation $settings, navi
 
     if (has_capability('mod/glossary:write', $PAGE->cm->context)) {
         $glossarynode->add(get_string('addentry', 'glossary'), new moodle_url('/mod/glossary/edit.php', array('cmid'=>$PAGE->cm->id)));
+    }
+
+    if ((!empty($eid) || (!empty($cmid) && !empty($id)) || $mode == 'entry')  &&
+            has_capability('mod/glossary:manageentries', $PAGE->cm->context)) {
+        // Change ID to hook as we came from an newly created entry.
+        if (!empty($mode) && $mode == 'entry') {
+            $id = $hook;
+        }
+        // Change ID to eid as we were viewing a single entry.
+        if (!empty($eid)) {
+            $id = $eid;
+        }
+        $glossarynode->add(get_string('editentry', 'glossary'), new moodle_url('/mod/glossary/edit.php',
+                array('cmid' => $PAGE->cm->id, 'id' => $id, 'mode' => $mode, 'hook' => $hook)),
+                navigation_node::TYPE_SETTING, null, null,
+                new pix_icon('t/edit', ''));
     }
 
     $glossary = $DB->get_record('glossary', array("id" => $PAGE->cm->instance));
